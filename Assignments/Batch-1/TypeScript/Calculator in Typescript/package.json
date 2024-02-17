@@ -1,0 +1,23 @@
+{
+  "dependencies": {
+    "inquirer": "^9.2.11"
+    
+  },
+  "type": "module",
+  "name": "calculator-in-typescript",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "@types/inquirer": "^9.0.3"
+    
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+
+}
