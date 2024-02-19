@@ -14,25 +14,60 @@ export default function RegistrationForm() {
     name: "",
     email: "",
     phoneNumber: 0,
+    username: "",
+    description: "",
+    gender: [],
+    password: "",
+    profession: ""
 
   })
 
   const [errors, setError] = useState<string[]>([])
-  const registerFormSchema = yup.object().shape({
-    name: yup.string().required("Name is required."),
-    email: yup.string().email("Invalid email address.").required("Email is required."),
-    phonenumber: yup.number()
 
-  })
+  const registerFormSchema = yup.object().shape({
+    description: yup.string().required("Description field is required."),
+    password: yup.string().required('Password field is required'),
+    username: yup.string().required("Username field is required."),
+    profession: yup.string().required("Profession is required"),
+    gender: yup.array().min(1, 'Select at least one gender').required('Gender is required'),
+
+    phoneNumber: yup
+      .mixed()
+      .test('is-required', 'Contact field is required', function (value) {
+        const isEmpty = value === undefined || value === null || value === '';
+        return !isEmpty || this.createError({ message: 'Contact field is required' });
+      })
+      .nullable(),
+
+    email: yup.string().email("Invalid email address.").required("Email field is required."),
+    name: yup.string().required("Name field is required."),
+
+  });
 
   const [contactList, setcontactList] = useState<contactTypes[]>([])
 
   const OnChangeHandler = (e: OnChangeEventType) => {
-    let userDetails = {
-      ...contactInfo,
-      [e.target.name]: e.target.value
+    if (e.target.type === 'radio' && e.target.checked) {
+      setContactInfo({
+        ...contactInfo,
+        gender: [e.target.value] // Update gender as an array with only the selected value
+      });
     }
-    setContactInfo(userDetails)
+
+    else if (e.target.type === 'select-one') {
+      const { name, value } = e.target;
+      setContactInfo(prevState => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+
+    else {
+      setContactInfo({
+        ...contactInfo,
+        [e.target.name]: e.target.value
+      });
+    }
   }
 
 
@@ -57,6 +92,11 @@ export default function RegistrationForm() {
         name: "",
         email: "",
         phoneNumber: 0,
+        username: "",
+        description: "",
+        gender: [],
+        password: "",
+        profession: ""
       })
 
     } catch (err: any) {
@@ -139,36 +179,37 @@ export default function RegistrationForm() {
               <div className="flex items-center">
                 <label className="mr-4">
                   <input
-                    type="checkbox"
+                    type="radio"
                     name="gender"
-                    value="male"
-                  // checked={formData.gender === 'male'}
-                  // onChange={handleChange}
+                    value="Male"
+                    checked={contactInfo.gender.includes('Male')} // Check if 'male' is included in the gender array
+                    onChange={OnChangeHandler}
                   />
                   <span className="ml-2 text-gray-700">Male</span>
                 </label>
                 <label>
                   <input
-                    type="checkbox"
+                    type="radio"
                     name="gender"
-                    value="female"
-                  // checked={formData.gender === 'female'}
-                  // onChange={handleChange}
+                    value="Female"
+                    checked={contactInfo.gender.includes('Female')} // Check if 'female' is included in the gender array
+                    onChange={OnChangeHandler}
                   />
                   <span className="ml-2 text-gray-700">Female</span>
                 </label>
                 <label className="ml-4">
                   <input
-                    type="checkbox"
+                    type="radio"
                     name="gender"
-                    value="trans"
-                  // checked={formData.gender === 'trans'}
-                  // onChange={handleChange}
+                    value="Trans"
+                    checked={contactInfo.gender.includes('Trans')} // Check if 'trans' is included in the gender array
+                    onChange={OnChangeHandler}
                   />
                   <span className="ml-2 text-gray-700">Trans</span>
                 </label>
               </div>
             </div>
+
 
             {/* Profession Dropdown */}
             <div className="mb-4">
@@ -178,17 +219,16 @@ export default function RegistrationForm() {
               <select
                 id="profession"
                 name="profession"
-                // value={formData.profession}
-                // onChange={handleChange}
+                value={contactInfo.profession}
+                onChange={OnChangeHandler}
                 className="w-full px-3 py-2 border rounded shadow text-gray-700 appearance-none focus:outline-none focus:shadow-outline"
                 required
               >
-                <option value="">Select Profession</option>
-                <option value="developer">Developer</option>
-                <option value="designer">Designer</option>
-                <option value="teacher">Teacher</option>
-                <option value="doctor">Doctor</option>
-                {/* Add more options as needed */}
+                <option value="" disabled hidden>Select Profession</option>
+                <option value="Developer">Developer</option>
+                <option value="Designer">Designer</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Doctor">Doctor</option>
               </select>
             </div>
 
@@ -200,8 +240,8 @@ export default function RegistrationForm() {
                 type="text"
                 id="username"
                 name="username"
-                // value={formData.fullName}
-                // onChange={handleChange}
+                value={contactInfo.username}
+                onChange={OnChangeHandler}
                 className="w-full px-3 py-2 border rounded shadow text-gray-700 appearance-none focus:outline-none focus:shadow-outline"
                 placeholder="Username"
                 required
@@ -216,8 +256,8 @@ export default function RegistrationForm() {
                 type="password"
                 id="password"
                 name="password"
-                // value={formData.password}
-                // onChange={handleChange}
+                value={contactInfo.password}
+                onChange={OnChangeHandler}
                 className="w-full px-3 py-2 border rounded shadow text-gray-700 appearance-none focus:outline-none focus:shadow-outline"
                 placeholder="********"
                 required
@@ -232,8 +272,8 @@ export default function RegistrationForm() {
               <textarea
                 id="description"
                 name="description"
-                // value={formData.description}
-                // onChange={handleChange}
+                value={contactInfo.description}
+                onChange={OnChangeHandler}
                 className="w-full px-3 py-2 border rounded shadow text-gray-700 appearance-none focus:outline-none focus:shadow-outline"
                 rows={4}
                 placeholder="Tell us about yourself..."
