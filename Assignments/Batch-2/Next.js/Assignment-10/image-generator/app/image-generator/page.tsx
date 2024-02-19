@@ -7,6 +7,7 @@ export default function ImageGenerator() {
     const [urls, setUrls] = useState<string[]>([]);
     const [error, setError] = useState("");
     const [loader, setLoader] = useState(false);
+    const [refreshAttempts, setRefreshAttempts] = useState(0);
 
     const query = async (data) => {
         console.log("data: ", data);
@@ -31,7 +32,7 @@ const onClickHandler = async () => {
         const input = { "inputs": text };
         const newUrls = [];
         for (let i = 0; i < 3; i++) {
-            // Add variation to the input
+            // Added variation to the input
             const modifiedInput = { ...input, "sampleNumber": i + 1 };
             const result = await query(modifiedInput);
             newUrls.push(result);
@@ -48,11 +49,12 @@ const onClickHandler = async () => {
 };
 
 
-    // Inside refreshHandler function
+// Inside refreshHandler function
 const refreshHandler = async () => {
-    if (urls.length >= 3) {
-        // If already generated 3 times, show alert and return
-        alert("You have reached the maximum limit of 3 attempts to regenerate the same query.");
+    // Check if the number of attempts has reached 3
+    if (refreshAttempts > 2) {
+        // If already attempted 3 times, show alert and return
+        alert("You have reached the maximum limit of 2 attempts to regenerate the same query.");
         return;
     }
 
@@ -61,11 +63,14 @@ const refreshHandler = async () => {
         const input = { "inputs": text };
         const newUrls = [];
         for (let i = 0; i < 3; i++) {
-            const result = await query(input);
+            const uniqueInput = {...input, id: i };
+            const result = await query(uniqueInput);
             newUrls.push(result);
         }
-        setUrls([...urls, ...newUrls]);
+        setUrls([...newUrls]);
         setError("");
+        // Increment the number of refresh attempts
+        setRefreshAttempts(refreshAttempts + 1);
     } catch (error) {
         setError("Error: Failed to generate images. Please try again.");
         console.error("Error:", error);
@@ -73,6 +78,7 @@ const refreshHandler = async () => {
         setLoader(false);
     }
 };
+
 
 
     const refreshPage = () => {
@@ -126,10 +132,10 @@ const refreshHandler = async () => {
 
             </div>
 
-            <div className="flex gap-3 max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+            <div className="flex gap-3 max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-400 dark:border-gray-700">
                 {urls.map((url, index) => (
                     <a key={index} href={url} target="_blank" rel="noopener noreferrer">
-                        <img src={url} alt={`Generated Image ${index + 1}`} />
+                        <img src={url} alt={`Tryed to Generate Image ${index + 1}`} />
                     </a>
                 ))}
             </div>
