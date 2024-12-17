@@ -1,7 +1,7 @@
 from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
 from langchain_core.prompts import PromptTemplate
 from langchain.chains import SimpleSequentialChain, LLMChain
-from langchain.schema import RunnableMap, RunnableSequence
+from langchain.schema.runnable  import RunnableMap, RunnableSequence
 from dotenv import load_dotenv
 import os
 load_dotenv() 
@@ -15,21 +15,29 @@ llm = HuggingFaceEndpoint(
 prompt1 = PromptTemplate(template="Translate the following English text to Spanish: {text}", input_variables=["text"])
 prompt2 = PromptTemplate(template="What is the sentiment of this Spanish text: {text}", input_variables=["text"])
 
-chain = RunnableSequence(
-    steps = [
-        RunnableMap ({ "text": prompt1 | llm }),
-        RunnableMap ({ "text": prompt2 | llm })
-    ]
-)
+## 1st method
+chain1 = LLMChain(llm = llm, prompt = prompt1)
+chain2 = LLMChain(llm = llm, prompt = prompt2)
 
-# chain1 = LLMChain(llm = llm, prompt = prompt1)
-# chain2 = LLMChain(llm = llm, prompt = prompt2)
-
-# chain = SimpleSequentialChain(chains = [chain1, chain2])
+chain = SimpleSequentialChain(chains = [chain1, chain2])
 
 result = chain.invoke("You are such a bad guy")
 
 print(result)
+
+## 2nd method
+
+# translate_chain = prompt1 | llm
+# sentiment_chain = prompt2 | llm
+
+# translated_text = translate_chain.invoke("You are such a good guy")
+
+# result = sentiment_chain.invoke({"text": translated_text})
+
+# print("Translated Text:", translated_text)
+# print("Sentiment Analysis:", result)
+
+
 
 
 
@@ -44,3 +52,4 @@ print(result)
 # response = chat_model.invoke(prompt_output)
 
 # print(response)
+
