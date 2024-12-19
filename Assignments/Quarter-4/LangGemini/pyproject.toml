@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "main"
+version = "0.1.0"
+description = ""
+authors = ["Abrar-Kamoka <abrarabbas.ak@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+python-dotenv = "^1.0.1"
+langchain-google-genai = "^2.0.7"
+langchain = "^0.3.12"
+langgraph = "^0.2.59"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
