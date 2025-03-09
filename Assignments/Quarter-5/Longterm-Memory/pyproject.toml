@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "langgraf"
+version = "0.1.0"
+description = ""
+authors = ["Abrar-Kamoka <abrarabbas.ak@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.6"
+langchain-community = "^0.3.14"
+langchain-google-genai = "^2.0.8"
+langchain-text-splitters = "^0.3.5"
+langchain = "^0.3.14"
+python-dotenv = "^1.0.1"
+pymongo = "^4.10.1"
+langgraph = "^0.2.62"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
